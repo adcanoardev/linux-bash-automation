@@ -6,12 +6,6 @@ The objective is to understand how the system behaves under different conditions
 
 ---
 
-Perfecto, gracias por la corrección 👍
-Tienes razón: **NO es `nproc`**, es **límite de espacio de direcciones (`--as`)**.
-Te dejo la **documentación corregida, coherente y técnicamente precisa**, alineada con lo que realmente estás haciendo.
-
----
-
 # 🔍 Troubleshooting – Address Space Limiting, Swap Generation & Forensic Analysis
 
 ## Objective
