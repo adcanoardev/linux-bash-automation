@@ -1,14 +1,77 @@
-# Ops Linux Automation 🐧
+# 🐧 Linux & Bash Automation
 
-Conjunto de scripts avanzados para la administración automatizada de sistemas Linux. Este proyecto centraliza la gestión de tareas operativas críticas, garantizando la consistencia y seguridad del sistema.
+Step 02 of my DevOps Roadmap.
 
-### 🛠️ Tecnologías
-![Linux](https://img.shields.io/badge/-Linux-black?logo=linux) ![Bash](https://img.shields.io/badge/-Bash-4EAA25?logo=gnu-bash&logoColor=white) ![Git](https://img.shields.io/badge/-Git-F05032?logo=git&logoColor=white)
+This repository contains practical Linux administration documentation and Bash automation scripts built while strengthening core system fundamentals.
+The objective is to move from manual server management to structured, repeatable and automated operations.
 
-### 🚀 Desafío Técnico
-Automatización de flujos de trabajo de administración (backups rotativos, aprovisionamiento de usuarios y endurecimiento de permisos) para eliminar errores humanos y reducir tiempos de respuesta en la gestión de servidores.
+---
 
-### 📦 Estructura
-- **/scripts**: Automatizaciones de seguridad, backups y auditoría.
-- **/config**: Plantillas para Cronjobs y políticas de Logrotate.
-- **/docs**: Guías detalladas sobre el funcionamiento y despliegue de los scripts.
+## 🎯 Focus
+
+- Linux server baseline configuration
+- System hardening basics
+- Operational troubleshooting
+- Bash scripting for automation
+- Scheduled tasks with systemd timers
+- Basic auditing and backup workflows
+
+This phase builds the foundation required before moving into Docker, Kubernetes and Cloud Infrastructure.
+
+---
+
+## 📂 Repository Structure
+
+### 📁 docs/
+
+Documentation-first approach to system administration.
+
+- `SERVER_BASELINE.md`
+- `SERVER_SECURITY_CHECKLIST.md`
+- `TROUBLESHOOTING.md`
+- `COMMANDS_CHEATSHEET.md`
+
+---
+
+### 📁 scripts/
+
+Operational automation scripts written in Bash.
+
+- `healthcheck.sh`
+- `backup.sh`
+- `restore.sh`
+- `deploy_pull_restart.sh`
+- `user_audit.sh`
+- `port_audit.sh`
+- `log_snapshot.sh`
+
+---
+
+### 📁 systemd/
+
+Service and timer definitions for scheduled automation.
+
+- `backup.service`
+- `backup.timer`
+- `healthcheck.service` *(optional)*
+
+---
+
+### 📁 logs/
+
+Sample log outputs for reference.  
+(No secrets or sensitive data included.)
+
+---
+
+## 🧠 Philosophy
+
+- Documentation before automation
+- Automation before orchestration
+- Strong Linux fundamentals before Cloud complexity
+
+---
+
+## 📈 Status
+
+🚧 In progress — Building solid Linux and Bash foundations before advancing to containerization and cloud-native tooling.
