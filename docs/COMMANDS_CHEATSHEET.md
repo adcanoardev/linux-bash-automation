@@ -167,3 +167,32 @@ grep "error" /var/log/syslog
 ```bash
 awk '{print $9}' access.log | sort | uniq -c | sort -nr
 ```
+
+---
+
+## 🔀 Redirections
+
+### stdout (1) – normal output
+```bash
+command > file.txt
+```
+
+### stderr (2) – error output
+```bash
+command 2> errors.txt
+```
+
+### Discard errors
+```bash
+command 2> /dev/null
+```
+
+### Redirect both stdout and stderr
+```bash
+command > output.txt 2>&1
+```
+
+### Send everything to null
+```bash
+command > /dev/null 2>&1
+```
