@@ -44,8 +44,14 @@ ls *.txt
 ls file?.txt
 ls file[123].txt
 ls file[a-z].txt
+ls file[[:digit:]].txt
 echo *.txt
 ```
+- `*` → any number of characters  
+- `?` → exactly one character  
+- `[abc]` → specific characters  
+- `[a-z]` → range  
+- `[[:digit:]]` → any numeric digit (0–9, POSIX class)  
 
 ---
 
