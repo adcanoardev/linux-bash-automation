@@ -1,398 +1,163 @@
 # Linux Commands Cheatsheet
 
-Practical Linux commands for daily operations, troubleshooting and system analysis.  
-Includes examples and what to check in real scenarios.
+Minimal reference for daily Linux operations and troubleshooting.
 
 ---
 
-# 🔧 PROCESSES
+## 🔧 PROCESSES
 
-## ps – list processes (snapshot)
-
+### ps – list running processes
 ```bash
 ps aux
-ps aux | grep nginx
-ps -eo pid,ppid,user,%cpu,%mem,etime,cmd --sort=-%cpu | head
-````
+ps -eo pid,user,%cpu,%mem,cmd --sort=-%cpu | head
+```
 
-What to look at:
-
-* High %CPU or %MEM
-* Long running time (etime)
-* Parent process (PPID)
-* Full command (cmd)
-
----
-
-## top / htop – live monitoring
-
+### top / htop – live process monitoring
 ```bash
 top
 htop
 ```
 
-What to look at:
-
-* Load average (top line)
-* Processes consuming most CPU/RAM
-* Overall responsiveness
-
----
-
-## pidof – get PID by process name
-
+### pidof – get PID by process name
 ```bash
-pidof sshd
 pidof nginx
 ```
 
-What to look at:
-
-* Multiple PIDs → service running workers
-
----
-
-## kill – stop a process
-
+### kill – send signal to process
 ```bash
 kill -TERM <PID>
 kill -KILL <PID>
 ```
 
-What to look at:
-
-* Use TERM first (graceful shutdown)
-* Use KILL only if process is stuck
-
----
-
-## nice / renice – process priority
-
+### nice / renice – adjust process priority
 ```bash
 nice -n 10 command
 renice -n 10 -p <PID>
 ```
 
-What to look at:
+---
 
-* Increase nice value to lower priority
-* Prevent non-critical tasks from impacting system
+## 🧩 SHELL – Wildcards (pattern matching)
+
+```bash
+ls *.txt
+ls file?.txt
+ls file[123].txt
+ls file[a-z].txt
+echo *.txt
+```
 
 ---
 
-# 💾 DISK
+## 💾 DISK
 
-## df -h – filesystem usage
-
+### df – filesystem usage
 ```bash
 df -h
-df -h /var
 ```
 
-What to look at:
-
-* Filesystems above 85–90%
-* Root (/) or /var filling up
-
----
-
-## du -sh – directory size
-
+### du – directory size
 ```bash
+du -sh /*
 du -sh /var/log/*
-du -sh ./*
 ```
 
-What to look at:
-
-* Large directories
-* Rapidly growing log folders
-
----
-
-## lsblk – disk layout
-
+### lsblk – block devices layout
 ```bash
 lsblk
-lsblk -f
 ```
 
-What to look at:
-
-* Mounted disks
-* Filesystem types
-* Available devices
-
----
-
-## ncdu – interactive disk usage
-
+### ncdu – interactive disk usage analyzer
 ```bash
 sudo ncdu /
 ```
 
-What to look at:
-
-* Quickly identify large folders
-
 ---
 
-# 🧠 MEMORY / CPU
+## 🧠 MEMORY / CPU
 
-## free -h – memory usage
-
+### free – memory usage
 ```bash
 free -h
 ```
 
-What to look at:
-
-* Available memory
-* Swap usage
-
----
-
-## vmstat – system performance
-
+### vmstat – system performance statistics
 ```bash
 vmstat 1 5
 ```
 
-What to look at:
-
-* si/so → swap activity
-* wa → IO wait
-* r → run queue
-
----
-
-## uptime – load average
-
+### uptime – load average & uptime
 ```bash
 uptime
 ```
 
-What to look at:
-
-* Load compared to number of CPU cores
-
----
-
-## lscpu – CPU information
-
+### lscpu – CPU information
 ```bash
 lscpu
 ```
 
-What to look at:
-
-* Number of CPUs
-* Architecture
-* Virtualization support
-
 ---
 
-# ⚙️ SERVICES (systemd)
+## ⚙️ SERVICES
 
-## systemctl – manage services
-
+### systemctl – manage systemd services
 ```bash
 systemctl status nginx
-sudo systemctl restart nginx
-sudo systemctl enable nginx
-sudo systemctl disable nginx
+systemctl restart nginx
+systemctl enable nginx
 ```
 
-What to look at:
-
-* active (running) vs failed
-* Recent log output
-* Service enabled at boot
-
----
-
-## journalctl -u – service logs
-
+### journalctl – view systemd logs
 ```bash
-journalctl -u nginx -n 100 --no-pager
-journalctl -u nginx -f
-journalctl -u nginx --since "today"
+journalctl -u nginx -n 100
+journalctl -f
 ```
-
-What to look at:
-
-* Repeated errors
-* Permission issues
-* Bind failures
 
 ---
 
-# 🌐 NETWORK
+## 🌐 NETWORK
 
-## ip a – network interfaces
-
+### ip – network interfaces and routes
 ```bash
 ip a
-```
-
-What to look at:
-
-* Correct IP assigned
-* Interface state (UP)
-
----
-
-## ip r – routing table
-
-```bash
 ip r
 ```
 
-What to look at:
-
-* Default route present
-* Correct gateway
-
----
-
-## ss -tulpn – listening ports
-
+### ss – show listening sockets
 ```bash
-sudo ss -tulpn
-sudo ss -tulpn | grep :80
+ss -tulpn
 ```
 
-What to look at:
-
-* Which service is listening
-* Port conflicts
-
----
-
-## curl – HTTP requests / health checks
-
+### curl – HTTP request / API test
 ```bash
 curl -I https://example.com
-curl -s http://localhost:8080/health
-curl -v http://localhost:8080
 ```
 
-What to look at:
-
-* HTTP status codes (200, 301, 404, 500)
-* Connection errors
-* Response time
-
----
-
-## dig – DNS lookup
-
+### dig – DNS query tool
 ```bash
 dig example.com
-dig +short example.com
 ```
 
-What to look at:
-
-* Correct IP resolution
-* DNS failures
-
----
-
-## traceroute – network path
-
+### traceroute – trace network path
 ```bash
 traceroute example.com
 ```
 
-What to look at:
-
-* Where connection drops
-* Network latency between hops
-
 ---
 
-# 📜 LOGS
+## 📜 LOGS
 
-## /var/log/* – classic logs
-
-```bash
-ls -lah /var/log
-sudo tail -n 200 /var/log/syslog
-sudo tail -n 200 /var/log/auth.log
-```
-
-What to look at:
-
-* Authentication attempts (auth.log)
-* System errors (syslog)
-
----
-
-## journalctl – systemd logs
-
-```bash
-journalctl -n 200 --no-pager
-journalctl -f
-journalctl --since "1 hour ago"
-```
-
-What to look at:
-
-* Recent errors
-* Kernel messages
-* Service-related issues
-
----
-
-## tail -f – follow logs live
-
+### tail – view log in real time
 ```bash
 tail -f /var/log/syslog
-tail -f /var/log/nginx/error.log
 ```
 
-What to look at:
-
-* Real-time errors while reproducing issues
-
----
-
-## grep – search inside logs
-
+### grep – search text in files
 ```bash
-grep -R "error" /var/log/nginx/
-grep -n "failed" /var/log/syslog
-grep -E "timeout|refused|denied" /var/log/syslog
+grep "error" /var/log/syslog
 ```
 
-What to look at:
-
-* Repeated error patterns
-* Failure messages
-
----
-
-## awk – basic log analysis
-
-Example: extract IPs from failed SSH logins
-
+### awk – text processing & field extraction
 ```bash
-grep "Failed password" /var/log/auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -nr | head
+awk '{print $9}' access.log | sort | uniq -c | sort -nr
 ```
-
-What to look at:
-
-* Repeated attacking IPs
-
-Example: count HTTP status codes (nginx)
-
-```bash
-awk '{print $9}' /var/log/nginx/access.log | sort | uniq -c | sort -nr | head
-```
-
-What to look at:
-
-* Many 404 → bad routes or bots
-* 500 → backend issues
-* 301/302 → redirects
