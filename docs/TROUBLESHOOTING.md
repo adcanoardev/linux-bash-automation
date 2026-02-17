@@ -271,4 +271,106 @@ Helps with:
 * Troubleshooting deleted files still using space
 * Low-level filesystem debugging
 
+---
+
+# 7️⃣ Hard Links & Symbolic Links
+
+## Objective
+Understand the difference between hard links and symbolic (soft) links.
+
+---
+
+## Hard Link
+
+Create:
+
+```bash
+ln original.txt hardlink.txt
+````
+
+Check inode:
+
+```bash
+ls -i original.txt hardlink.txt
+```
+
+If both files show the SAME inode → they are hard links.
+
+### Characteristics
+
+* Same inode
+* Same data
+* If one is deleted, the other still works
+* Cannot link across different filesystems
+* Cannot link directories (normally)
+
+Check link count:
+
+```bash
+ls -l
+```
+
+You will see the link counter increase.
+
+---
+
+## Symbolic Link (Soft Link)
+
+Create:
+
+```bash
+ln -s original.txt symlink.txt
+```
+
+Check:
+
+```bash
+ls -l
+```
+
+You will see:
+
+```
+symlink.txt -> original.txt
+```
+
+Check inode:
+
+```bash
+ls -i original.txt symlink.txt
+```
+
+They have DIFFERENT inodes.
+
+### Characteristics
+
+* Different inode
+* Points to original file path
+* Can link across filesystems
+* Can link directories
+* If original file is deleted → symlink becomes broken
+
+---
+
+## Key Difference
+
+Hard link:
+Directory entry → SAME inode → SAME data
+
+Symbolic link:
+Directory entry → NEW inode → points to file path
+
+---
+
+## Why This Matters
+
+Understanding links helps with:
+
+* File management
+* Disk space behavior
+* Inode concepts
+* Debugging deleted files
+* Understanding how Linux filesystem works
+
+---
 
