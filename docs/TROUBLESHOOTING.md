@@ -1,111 +1,93 @@
 # Troubleshooting & System Experiments
 
-This document contains practical troubleshooting scenarios and controlled experiments performed while learning Linux system administration.
+Practical troubleshooting notes and experiments while learning Linux administration.
 
-The objective is to understand how the system behaves under different conditions before automating solutions.
+Objective:
+Understand system behavior before automating solutions.
 
 ---
 
-# 🔍 1️⃣ Process Resource Limiting (prlimit)
+# 1️⃣ Process Resource Limiting (prlimit)
 
 ## Objective
-
-Understand how limiting process resources affects system behavior.
-
-## Scenario
-
-Run a process (e.g. emacs) and restrict its memory usage using `prlimit`.
+Limit memory of a running process and observe system behavior.
 
 ## Steps
-
-Find process PID:
+Get PID:
 
 ```bash
 pidof emacs
 ````
 
-Apply memory limit (example):
+Limit memory (example):
 
 ```bash
 prlimit --pid <PID> --rss=1000000
 ```
 
-Check current limits:
+Check limits:
 
 ```bash
 prlimit --pid <PID>
 ```
 
-## What to Observe
-
+## What to observe
 * Process responsiveness
-* Memory consumption via:
+* Memory usage:
 
-  ```bash
-  top
-  free -h
-  ```
-* Whether process crashes or becomes unstable
+```bash
+top
+free -h
+```
 
-## Notes
-
-Useful for:
-
-* Simulating constrained environments
-* Understanding Linux process control
-* Learning system resource management
+* Stability (does it freeze or crash?)
 
 ---
 
-# 🔍 2️⃣ High CPU Usage Investigation
+# 2️⃣ High CPU Usage Investigation
 
 ## Objective
-
-Identify which process is consuming excessive CPU.
+Identify processes consuming excessive CPU.
 
 ## Steps
-
-Check system load:
+Check load:
 
 ```bash
 uptime
 ```
 
-Monitor processes:
+Monitor live:
 
 ```bash
 top
 ```
 
-List top CPU consumers:
+Top CPU consumers:
 
 ```bash
 ps -eo pid,user,%cpu,cmd --sort=-%cpu | head
 ```
 
-## What to Observe
-
-* CPU usage above 80–90%
+## What to observe
+* CPU consistently above 80–90%
+* Unexpected background processes
 * Repeated spikes
-* Background processes running unexpectedly
 
 ---
 
-# 🔍 3️⃣ Disk Space Investigation
+# 3️⃣ Disk Space Investigation
 
 ## Objective
-
-Identify what is filling up disk space.
+Find what is filling disk space.
 
 ## Steps
-
-Check filesystem usage:
+Check usage:
 
 ```bash
 df -h
 ```
 
-Identify large directories:
+Find large directories:
 
 ```bash
 du -sh /*
@@ -117,23 +99,20 @@ Interactive view:
 sudo ncdu /
 ```
 
-## What to Observe
-
-* Root (/) partition near full
+## What to observe
+* Root (/) near 100%
 * /var growing due to logs
-* Unexpected large directories
+* Unexpected large folders
 
 ---
 
-# 🔍 4️⃣ Service Not Starting
+# 4️⃣ Service Not Starting
 
 ## Objective
-
-Diagnose why a service fails to start.
+Diagnose why a service fails.
 
 ## Steps
-
-Check service status:
+Check status:
 
 ```bash
 systemctl status <service>
@@ -145,29 +124,26 @@ Check logs:
 journalctl -u <service> -n 100 --no-pager
 ```
 
-Check port usage:
+Check port:
 
 ```bash
 sudo ss -tulpn | grep <port>
 ```
 
-## What to Observe
-
-* Permission denied errors
+## What to observe
+* Permission errors
 * Port already in use
-* Configuration file issues
+* Configuration errors
 
 ---
 
-# 🔍 5️⃣ Network Connectivity Issue
+# 5️⃣ Network Connectivity Issue
 
 ## Objective
-
-Diagnose why server cannot reach external services.
+Diagnose connectivity problems.
 
 ## Steps
-
-Check IP configuration:
+Check IP:
 
 ```bash
 ip a
@@ -179,13 +155,13 @@ Check routing:
 ip r
 ```
 
-Test connectivity:
+Ping external IP:
 
 ```bash
 ping 8.8.8.8
 ```
 
-Test DNS resolution:
+Test DNS:
 
 ```bash
 dig google.com
@@ -197,25 +173,106 @@ Trace route:
 traceroute google.com
 ```
 
-## What to Observe
-
+## What to observe
 * Missing default route
 * DNS not resolving
-* High latency or dropped hops
+* Packet loss or latency
 
 ---
 
-# 📌 Philosophy
+# 6️⃣ Inode Inspection & File Metadata
 
-Troubleshooting is not about memorizing commands.
-It is about:
+## Objective
+Understand what an inode is and how Linux stores file metadata.
 
-1. Observe the symptom
-2. Identify the layer (process, disk, service, network)
-3. Validate with commands
-4. Document findings
-5. Automate prevention later
+Important:
+An inode does NOT store the filename.
+It stores file metadata.
 
 ---
 
-Status: 🚧 Continuously updated during Linux & Bash phase.
+## Get inode number
+```bash
+ls -i test.txt
+```
+
+Example output:
+
+```
+524373 test.txt
+```
+
+Meaning:
+
+* 524373 → inode number
+* test.txt → filename pointing to that inode
+
+Multiple filenames (hard links) can share the same inode.
+
+---
+
+## Check inode usage in filesystem
+```bash
+df -i
+```
+
+Example:
+
+```
+Filesystem      Inodes  IUsed   IFree IUse% Mounted on
+/dev/sda3      1277952 206287 1071665   17% /
+```
+
+Important:
+
+A filesystem can run out of inodes even if disk space is available.
+
+This happens when:
+
+* Too many small files exist
+* Logs accumulate
+
+---
+
+## Inspect inode metadata (low-level)
+```bash
+sudo debugfs -R "stat <524373>" /dev/sda3
+```
+
+Shows:
+
+* Owner (User / Group)
+* File size
+* Link count
+* Timestamps
+* Block usage
+
+Example fields:
+
+* Size → file size in bytes
+* Links → number of hard links
+* ctime → metadata change time
+* mtime → content modification time
+* atime → last access time
+* crtime → creation time (if supported)
+
+---
+
+## Key concept
+File structure in Linux:
+
+Directory entry (filename) → inode → data blocks
+
+* Filename stored in directory
+* Inode stores metadata
+* Data blocks store content
+
+---
+
+## Why this matters
+Helps with:
+
+* Understanding hard links
+* Diagnosing inode exhaustion
+* Troubleshooting deleted files still using space
+* Low-level filesystem debugging
