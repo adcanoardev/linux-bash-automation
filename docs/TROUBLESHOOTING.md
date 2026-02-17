@@ -1,5 +1,4 @@
 # Troubleshooting & System Experiments
-
 Practical troubleshooting notes and experiments while learning Linux administration.
 
 Objective:
@@ -8,7 +7,6 @@ Understand system behavior before automating solutions.
 ---
 
 # 1️⃣ Process Resource Limiting (prlimit)
-
 ## Objective
 Limit memory of a running process and observe system behavior.
 
@@ -45,7 +43,6 @@ free -h
 ---
 
 # 2️⃣ High CPU Usage Investigation
-
 ## Objective
 Identify processes consuming excessive CPU.
 
@@ -76,7 +73,6 @@ ps -eo pid,user,%cpu,cmd --sort=-%cpu | head
 ---
 
 # 3️⃣ Disk Space Investigation
-
 ## Objective
 Find what is filling disk space.
 
@@ -138,7 +134,6 @@ sudo ss -tulpn | grep <port>
 ---
 
 # 5️⃣ Network Connectivity Issue
-
 ## Objective
 Diagnose connectivity problems.
 
@@ -181,7 +176,6 @@ traceroute google.com
 ---
 
 # 6️⃣ Inode Inspection & File Metadata
-
 ## Objective
 Understand what an inode is and how Linux stores file metadata.
 
@@ -276,3 +270,5 @@ Helps with:
 * Diagnosing inode exhaustion
 * Troubleshooting deleted files still using space
 * Low-level filesystem debugging
+
+
