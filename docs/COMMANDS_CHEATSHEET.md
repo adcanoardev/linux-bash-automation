@@ -196,3 +196,52 @@ command > output.txt 2>&1
 ```bash
 command > /dev/null 2>&1
 ```
+---
+
+## 🔄 Shell Expansions
+
+Shell expands expressions before executing the command.
+
+### Brace Expansion – generate combinations
+```bash
+echo file{1..3}.txt
+echo {a,b,c}.log
+```
+
+### Tilde Expansion – home directory
+```bash
+cd ~
+cd ~/Documents
+```
+
+### Parameter Expansion – variables
+```bash
+name="adrian"
+echo $name
+echo ${name}
+```
+
+### Command Substitution – use command output
+```bash
+echo $(date)
+files=$(ls)
+```
+
+### Arithmetic Expansion – basic math
+```bash
+echo $((2 + 3))
+```
+
+### Pathname Expansion – globbing
+```bash
+ls *.txt
+ls file[0-9].txt
+```
+
+### Order (simplified)
+1. Brace  
+2. Tilde  
+3. Parameter  
+4. Command substitution  
+5. Arithmetic  
+6. Globbing
